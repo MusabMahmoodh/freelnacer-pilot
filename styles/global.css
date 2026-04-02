@@ -87,7 +87,7 @@ body {
     @apply pp-btn bg-primary text-primary-foreground;
   }
   .pp-btn-primary:hover:not(:disabled) {
-    background-color: rgba(124, 58, 237, 0.9);
+    background-color: rgba(37, 99, 235, 0.9);
     transform: translateY(-1px);
   }
 

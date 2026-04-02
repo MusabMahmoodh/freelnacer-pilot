@@ -39,10 +39,14 @@ def:pub page() -> JsxElement {
     def handle_tone_friendly() -> None { set_tone("friendly"); }
     def handle_tone_premium() -> None { set_tone("premium"); }
 
-    def handle_clear() -> None { data["reset"](); }
+    def handle_clear() -> None {
+        copied_key = "";
+        data["reset"]();
+    }
 
     async def handle_generate(e: any) -> None {
         e.preventDefault();
+        copied_key = "";
         await data["generate"]();
     }
 
@@ -69,18 +73,33 @@ def:pub page() -> JsxElement {
 
     def score_color(s: int) -> str {
         if s >= 85 { return "bg-emerald-500/15 text-emerald-200 border-emerald-400/25"; }
-        if s >= 72 { return "bg-violet-500/15 text-violet-200 border-violet-400/25"; }
+        if s >= 72 { return "bg-blue-500/15 text-blue-200 border-blue-400/25"; }
         if s >= 60 { return "bg-sky-500/15 text-sky-200 border-sky-400/25"; }
         return "bg-amber-500/15 text-amber-200 border-amber-400/25";
     }
 
-    def render_output_card(title: str, body: str, key: str, on_copy: any) -> JsxElement {
+    def score_bar(s: int) -> str {
+        if s <= 0 { return "w-0"; }
+        if s >= 100 { return "w-full"; }
+        if s >= 90 { return "w-[90%]"; }
+        if s >= 80 { return "w-[80%]"; }
+        if s >= 70 { return "w-[70%]"; }
+        if s >= 60 { return "w-[60%]"; }
+        if s >= 50 { return "w-[50%]"; }
+        if s >= 40 { return "w-[40%]"; }
+        if s >= 30 { return "w-[30%]"; }
+        if s >= 20 { return "w-[20%]"; }
+        if s >= 10 { return "w-[10%]"; }
+        return "w-[5%]";
+    }
+
+    def render_output_card(title: str, subtitle: str, body: str, key: str, on_copy: any) -> JsxElement {
         return (
             <div className="pp-card p-5">
                 <div className="flex items-start justify-between gap-3 mb-3">
                     <div>
                         <h3 className="text-sm font-semibold tracking-tight">{title}</h3>
-                        <p className="text-xs text-muted-foreground mt-0.5">Ready to paste. Edit 1–2 lines to match your voice.</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>
                     </div>
                     <button
                         className="pp-btn-ghost"
@@ -123,15 +142,49 @@ def:pub page() -> JsxElement {
         );
     }
 
+    def render_empty() -> JsxElement {
+        return (
+            <div className="pp-card p-8">
+                <div className="flex items-start gap-4">
+                    <div className="h-11 w-11 rounded-2xl bg-blue-500/15 border border-blue-400/25 flex items-center justify-center">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3 3-7z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+                        </svg>
+                    </div>
+                    <div className="flex-1">
+                        <h3 className="text-sm font-semibold tracking-tight">Your proposal will appear here</h3>
+                        <p className="text-sm text-muted-foreground mt-1">Paste a job description, pick a tone, and generate. You’ll get a proposal, pricing range, and a follow-up message.</p>
+                        <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div className="rounded-[var(--radius-md)] border border-border bg-white/5 p-3">
+                                <p className="text-xs font-medium">Proposal</p>
+                                <p className="text-xs text-muted-foreground mt-1">A tailored pitch with a strong close.</p>
+                            </div>
+                            <div className="rounded-[var(--radius-md)] border border-border bg-white/5 p-3">
+                                <p className="text-xs font-medium">Pricing</p>
+                                <p className="text-xs text-muted-foreground mt-1">A confident range for the scope.</p>
+                            </div>
+                            <div className="rounded-[var(--radius-md)] border border-border bg-white/5 p-3">
+                                <p className="text-xs font-medium">Follow-up</p>
+                                <p className="text-xs text-muted-foreground mt-1">One message to nudge a reply.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     has tone_help: dict = {
         "professional": "Clear, direct, and confident.",
         "friendly": "Warm, collaborative, and approachable.",
         "premium": "High-trust, outcomes-first, positioned as a partner.",
     };
 
+    has has_outputs: bool = (proposal or pricing or follow_up) and True or False;
+
     return (
         <div className="min-h-screen w-full pp-bg">
-            <div className="max-w-[72rem] mx-auto px-5 py-10">
+            <div className="max-w-[76rem] mx-auto px-5 py-10">
                 <div className="flex items-start justify-between gap-6 mb-8">
                     <div>
                         <div className="flex items-center gap-3">
@@ -155,8 +208,8 @@ def:pub page() -> JsxElement {
                     <button className="pp-btn-ghost" onClick={handle_logout} type="button">Sign out</button>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div className="pp-card p-6">
+                <div className="grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-6 items-start">
+                    <div className="pp-card p-6 lg:sticky lg:top-6">
                         <div className="flex items-start justify-between gap-4 mb-5">
                             <div>
                                 <h2 className="text-base font-semibold tracking-tight">Job description</h2>
@@ -165,6 +218,16 @@ def:pub page() -> JsxElement {
                             <div className={"pp-pill " + score_color(score)}>
                                 <span className="font-semibold">{str(score)}%</span>
                                 <span className="ml-2">{score_label(score)}</span>
+                            </div>
+                        </div>
+
+                        <div className="mb-5">
+                            <div className="flex items-center justify-between mb-2">
+                                <p className="text-xs font-medium uppercase tracking-[0.08em] text-muted-foreground">Success score</p>
+                                <p className="text-xs text-muted-foreground">Higher is better</p>
+                            </div>
+                            <div className="h-2 rounded-full bg-white/5 border border-border overflow-hidden">
+                                <div className={"h-full bg-blue-500/70 " + score_bar(score)} />
                             </div>
                         </div>
 
@@ -178,7 +241,7 @@ def:pub page() -> JsxElement {
                             />
 
                             <div className="flex flex-col gap-3">
-                                <div className="flex items-center justify-between">
+                                <div className="flex items-center justify-between gap-4">
                                     <div>
                                         <p className="text-xs font-medium uppercase tracking-[0.08em] text-muted-foreground">Tone</p>
                                         <p className="text-xs text-muted-foreground mt-1">{tone_help[tone] or ""}</p>
@@ -224,38 +287,56 @@ def:pub page() -> JsxElement {
                                 )}
                             </div>
                         </form>
+
+                        <div className="mt-5 rounded-[var(--radius-md)] border border-border bg-white/5 px-4 py-3">
+                            <p className="text-xs text-muted-foreground">Pro tip: add 1–2 specific details (timeline, stack, deliverables). It boosts the score and makes the pitch feel truly custom.</p>
+                        </div>
                     </div>
 
                     <div className="flex flex-col gap-4">
                         {loading and render_skeleton() or (
-                            <div className="grid grid-cols-1 gap-4">
-                                {render_output_card("Personalized proposal", proposal, "proposal", handle_copy_proposal)}
-                                <div className="pp-card p-5">
-                                    <div className="flex items-start justify-between gap-3 mb-3">
-                                        <div>
-                                            <h3 className="text-sm font-semibold tracking-tight">Suggested pricing</h3>
-                                            <p className="text-xs text-muted-foreground mt-0.5">A confident range that matches the scope.</p>
+                            has_outputs and (
+                                <div className="grid grid-cols-1 gap-4">
+                                    {render_output_card(
+                                        "Personalized proposal",
+                                        "Ready to paste. Edit 1–2 lines to match your voice.",
+                                        proposal,
+                                        "proposal",
+                                        handle_copy_proposal
+                                    )}
+                                    <div className="pp-card p-5">
+                                        <div className="flex items-start justify-between gap-3 mb-3">
+                                            <div>
+                                                <h3 className="text-sm font-semibold tracking-tight">Suggested pricing</h3>
+                                                <p className="text-xs text-muted-foreground mt-0.5">A confident range that matches the scope.</p>
+                                            </div>
+                                            <button
+                                                className="pp-btn-ghost"
+                                                type="button"
+                                                onClick={handle_copy_pricing}
+                                                disabled={not pricing}
+                                            >
+                                                {(copied_key == "pricing") and "Copied" or "Copy"}
+                                            </button>
                                         </div>
-                                        <button
-                                            className="pp-btn-ghost"
-                                            type="button"
-                                            onClick={handle_copy_pricing}
-                                            disabled={not pricing}
-                                        >
-                                            {(copied_key == "pricing") and "Copied" or "Copy"}
-                                        </button>
+                                        <div className="text-lg font-semibold">{pricing}</div>
+                                        <p className="text-xs text-muted-foreground mt-2">Optional: offer a discovery call + milestone plan to increase close rate.</p>
                                     </div>
-                                    <div className="text-lg font-semibold">{pricing}</div>
-                                    <p className="text-xs text-muted-foreground mt-2">Optional: offer a discovery call + milestone plan to increase close rate.</p>
+                                    {render_output_card(
+                                        "Follow-up message",
+                                        "Send 24–48 hours after applying.",
+                                        follow_up,
+                                        "follow_up",
+                                        handle_copy_follow_up
+                                    )}
                                 </div>
-                                {render_output_card("Follow-up message", follow_up, "follow_up", handle_copy_follow_up)}
-                            </div>
+                            ) or render_empty()
                         )}
-                    </div>
-                </div>
 
-                <div className="mt-8 text-xs text-muted-foreground">
-                    Mock AI is enabled for this preview. Swap the backend implementation to f"by llm()" when you’re ready.
+                        <div className="text-xs text-muted-foreground">
+                            Mock AI is enabled for this preview. Swap the backend implementation to f"by llm()" when you’re ready.
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
