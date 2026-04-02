@@ -84,7 +84,8 @@ body {
   }
 
   .pp-btn-primary {
-    @apply pp-btn bg-primary text-primary-foreground;
+    @apply inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] px-4 py-2.5 text-sm font-medium bg-primary text-primary-foreground;
+    transition: transform 0.12s ease, background-color 0.12s ease, border-color 0.12s ease, opacity 0.12s ease;
   }
   .pp-btn-primary:hover:not(:disabled) {
     background-color: rgba(37, 99, 235, 0.9);
@@ -92,7 +93,8 @@ body {
   }
 
   .pp-btn-ghost {
-    @apply pp-btn border border-border bg-transparent text-muted-foreground;
+    @apply inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] px-4 py-2.5 text-sm font-medium border border-border bg-transparent text-muted-foreground;
+    transition: transform 0.12s ease, background-color 0.12s ease, border-color 0.12s ease, opacity 0.12s ease;
   }
   .pp-btn-ghost:hover:not(:disabled) {
     @apply text-foreground;
@@ -102,6 +104,174 @@ body {
   .pp-pill {
     @apply inline-flex items-center rounded-full border border-border px-3 py-1 text-xs text-muted-foreground;
     background-color: rgba(255, 255, 255, 0.04);
+  }
+
+  /* Sidebar navigation */
+  .pp-sidebar {
+    @apply fixed left-0 top-0 bottom-0 w-64 border-r border-border bg-background flex flex-col;
+    backdrop-filter: blur(10px);
+    z-index: 40;
+  }
+
+  .pp-nav-item {
+    @apply flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm text-muted-foreground;
+    transition: background-color 0.12s ease, color 0.12s ease;
+  }
+  .pp-nav-item:hover {
+    @apply text-foreground;
+    background-color: rgba(255, 255, 255, 0.06);
+  }
+  .pp-nav-item-active {
+    @apply flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm font-medium text-foreground;
+    background-color: rgba(37, 99, 235, 0.15);
+    border: 1px solid rgba(37, 99, 235, 0.25);
+  }
+
+  /* Status badges */
+  .pp-badge-sent {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+    background-color: rgba(59, 130, 246, 0.15);
+    color: #93bbfd;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+  }
+  .pp-badge-won {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+    background-color: rgba(16, 185, 129, 0.15);
+    color: #6ee7b7;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+  }
+  .pp-badge-lost {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+    background-color: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+  }
+  .pp-badge-active {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+    background-color: rgba(14, 165, 233, 0.15);
+    color: #7dd3fc;
+    border: 1px solid rgba(14, 165, 233, 0.25);
+  }
+  .pp-badge-overdue {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+    background-color: rgba(245, 158, 11, 0.15);
+    color: #fcd34d;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+  }
+  .pp-badge-paid {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+    background-color: rgba(16, 185, 129, 0.15);
+    color: #6ee7b7;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+  }
+  .pp-badge-draft {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+    background-color: rgba(255, 255, 255, 0.06);
+    color: rgba(231, 238, 252, 0.68);
+    border: 1px solid rgba(231, 238, 252, 0.12);
+  }
+
+  /* Pipeline status badges */
+  .pp-badge-lead {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+    background-color: rgba(168, 85, 247, 0.15);
+    color: #c4b5fd;
+    border: 1px solid rgba(168, 85, 247, 0.25);
+  }
+  .pp-badge-proposed {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+    background-color: rgba(59, 130, 246, 0.15);
+    color: #93bbfd;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+  }
+  .pp-badge-delivered {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+    background-color: rgba(245, 158, 11, 0.15);
+    color: #fcd34d;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+  }
+
+  /* Stat card */
+  .pp-stat-card {
+    @apply border border-border rounded-[var(--radius-lg)] bg-card p-5;
+    backdrop-filter: blur(10px);
+  }
+
+  /* Tabs */
+  .pp-tab {
+    @apply px-4 py-2 text-sm text-muted-foreground rounded-[var(--radius-md)];
+    transition: color 0.12s ease, background-color 0.12s ease;
+  }
+  .pp-tab:hover {
+    @apply text-foreground;
+    background-color: rgba(255, 255, 255, 0.04);
+  }
+  .pp-tab-active {
+    @apply px-4 py-2 text-sm font-medium text-foreground rounded-[var(--radius-md)];
+    background-color: rgba(37, 99, 235, 0.15);
+    border: 1px solid rgba(37, 99, 235, 0.25);
+  }
+
+  /* Pipeline steps */
+  .pp-pipeline-step {
+    @apply flex items-center gap-2 text-xs text-muted-foreground;
+  }
+  .pp-pipeline-dot {
+    @apply h-3 w-3 rounded-full border-2 border-border;
+    background-color: transparent;
+  }
+  .pp-pipeline-dot-done {
+    @apply h-3 w-3 rounded-full;
+    background-color: rgba(37, 99, 235, 0.8);
+    border: 2px solid rgba(37, 99, 235, 0.4);
+  }
+  .pp-pipeline-dot-current {
+    @apply h-3 w-3 rounded-full;
+    background-color: rgba(16, 185, 129, 0.8);
+    border: 2px solid rgba(16, 185, 129, 0.4);
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+  }
+  .pp-pipeline-line {
+    @apply h-0.5 flex-1;
+    background-color: rgba(231, 238, 252, 0.12);
+  }
+  .pp-pipeline-line-done {
+    @apply h-0.5 flex-1;
+    background-color: rgba(37, 99, 235, 0.5);
+  }
+
+  /* Insight card */
+  .pp-insight {
+    @apply flex items-start gap-3 rounded-[var(--radius-md)] border border-border px-4 py-3;
+    background-color: rgba(255, 255, 255, 0.03);
+    transition: background-color 0.12s ease;
+  }
+  .pp-insight:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+  }
+  .pp-insight-icon-warning {
+    @apply h-8 w-8 rounded-lg flex items-center justify-center shrink-0;
+    background-color: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+  }
+  .pp-insight-icon-revenue {
+    @apply h-8 w-8 rounded-lg flex items-center justify-center shrink-0;
+    background-color: rgba(16, 185, 129, 0.15);
+    color: #6ee7b7;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+  }
+  .pp-insight-icon-analytics {
+    @apply h-8 w-8 rounded-lg flex items-center justify-center shrink-0;
+    background-color: rgba(59, 130, 246, 0.15);
+    color: #93bbfd;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+  }
+  .pp-insight-icon-action {
+    @apply h-8 w-8 rounded-lg flex items-center justify-center shrink-0;
+    background-color: rgba(245, 158, 11, 0.15);
+    color: #fcd34d;
+    border: 1px solid rgba(245, 158, 11, 0.2);
   }
 
   .pp-skeleton {

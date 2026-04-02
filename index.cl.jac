@@ -1,6 +1,9 @@
 import ".styles.global.css";
 import from .pages.LoginPage { page as LoginPage }
 import from .pages.DashboardPage { page as DashboardPage }
+import from .pages.ProjectsPage { page as ProjectsPage }
+import from .pages.ProjectDetailPage { page as ProjectDetailPage }
+import from .components.AppShell { AppShell }
 import from "@jac/runtime" { AuthGuard, Router, Routes, Route, Navigate }
 
 def:pub AuthGuardRoute() -> JsxElement {
@@ -14,7 +17,11 @@ def:pub ClientApp() -> JsxElement {
                 <Route path="/" element={<Navigate to="/login" replace={True} />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route element={<AuthGuardRoute />}>
-                    <Route path="/dashboard" element={<DashboardPage />} />
+                    <Route element={<AppShell />}>
+                        <Route path="/dashboard" element={<DashboardPage />} />
+                        <Route path="/projects" element={<ProjectsPage />} />
+                        <Route path="/projects/:id" element={<ProjectDetailPage />} />
+                    </Route>
                 </Route>
             </Routes>
         </Router>

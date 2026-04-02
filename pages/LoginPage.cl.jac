@@ -54,26 +54,34 @@ def:pub page() -> JsxElement {
     }
 
     return (
-        <div className="auth-page">
-            <div className="auth-container">
-                <div className="auth-header">
-<h1>{"Welcome" if is_login else "Create account"}</h1>
-                    <p>{"Sign in to continue" if is_login else "Get started for free"}</p>
+        <div className="min-h-screen w-full pp-bg flex items-center justify-center px-4">
+            <div className="w-full max-w-md">
+                <div className="text-center mb-8">
+                    <div className="flex items-center justify-center gap-3 mb-4">
+                        <div className="h-10 w-10 rounded-2xl bg-blue-500/15 border border-blue-400/25 flex items-center justify-center">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3 3-7z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+                            </svg>
+                        </div>
+                        <h1 className="text-2xl font-semibold tracking-tight">PitchPerfect AI</h1>
+                    </div>
+                    <h2 className="text-lg font-medium">{"Welcome back" if is_login else "Create account"}</h2>
+                    <p className="text-sm text-muted-foreground mt-1">{"Sign in to continue" if is_login else "Get started for free"}</p>
                 </div>
-                <div className="auth-card">
+                <div className="pp-card p-6">
                     {error and (
-                        <div className="error-box mb-5">
+                        <div className="rounded-[var(--radius-md)] border border-red-400/25 bg-red-500/10 px-4 py-3 text-sm text-red-200 mb-5">
                             {error}
                         </div>
                     )}
                     <form
                         onSubmit={handle_submit}
-                        className="auth-form"
+                        className="flex flex-col gap-4"
                     >
                         <div>
-                            <label className="label">Username</label>
+                            <label className="block text-sm font-medium text-muted-foreground mb-2">Username</label>
                             <input
-                                className="input"
+                                className="pp-input"
                                 type="text"
                                 value={username}
                                 onChange={handle_username}
@@ -83,9 +91,9 @@ def:pub page() -> JsxElement {
                             />
                         </div>
                         <div>
-                            <label className="label">Password</label>
+                            <label className="block text-sm font-medium text-muted-foreground mb-2">Password</label>
                             <input
-                                className="input"
+                                className="pp-input"
                                 type="password"
                                 value={password}
                                 onChange={handle_password}
@@ -95,7 +103,7 @@ def:pub page() -> JsxElement {
                             />
                         </div>
                         <button
-                            className="btn btn-primary w-full h-12 mt-1"
+                            className="pp-btn-primary w-full h-12 mt-1"
                             type="submit"
                             disabled={loading}
                         >
@@ -106,11 +114,11 @@ def:pub page() -> JsxElement {
                             )}
                         </button>
                     </form>
-                    <div className="auth-toggle">
+                    <div className="text-center text-sm text-muted-foreground mt-5">
                         {"Don't have an account? " if is_login else "Already have an account? "}
                         <button
                             type="button"
-                            className="toggle-btn"
+                            className="text-primary font-medium hover:underline"
                             onClick={toggle_mode}
                         >
                             {"Sign up" if is_login else "Sign in"}
