@@ -1,4 +1,5 @@
 import "./styles/global.css";
+import from .pages.LandingPage { page as LandingPage }
 import from .pages.LoginPage { page as LoginPage }
 import from .pages.DashboardPage { page as DashboardPage }
 import from .pages.ProjectsPage { page as ProjectsPage }
@@ -15,7 +16,7 @@ def:pub ClientApp() -> JsxElement {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Navigate to="/login" replace={True} />} />
+                <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route element={<AuthGuardRoute />}>
                     <Route element={<AppShell />}>

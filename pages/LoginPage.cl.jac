@@ -63,7 +63,7 @@ def:pub page() -> JsxElement {
                                 <path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3 3-7z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
                             </svg>
                         </div>
-                        <h1 className="text-2xl font-semibold tracking-tight">PitchPerfect AI</h1>
+                        <h1 className="text-2xl font-semibold tracking-tight">Freelancer HQ</h1>
                     </div>
                     <h2 className="text-lg font-medium">{"Welcome back" if is_login else "Create account"}</h2>
                     <p className="text-sm text-muted-foreground mt-1">{"Sign in to continue" if is_login else "Get started for free"}</p>

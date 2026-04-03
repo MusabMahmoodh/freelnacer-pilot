@@ -35,7 +35,7 @@ def:pub AppShell() -> JsxElement {
                             </svg>
                         </div>
                         <div>
-                            <h1 className="text-base font-semibold tracking-tight">PitchPerfect AI</h1>
+                            <h1 className="text-base font-semibold tracking-tight">Freelancer HQ</h1>
                             <p className="text-xs text-muted-foreground">Freelancer Assistant</p>
                         </div>
                     </div>

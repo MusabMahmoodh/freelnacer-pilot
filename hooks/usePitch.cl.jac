@@ -1,6 +1,6 @@
 sv import from ..services.pitchService { generate_pitch }
 
-# Client data hook for PitchPerfect.
+# Client data hook for Freelancer HQ.
 
 def:pub usePitch() -> dict {
     has job_desc: str = "";
