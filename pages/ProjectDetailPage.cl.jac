@@ -12,6 +12,7 @@ def:pub page() -> JsxElement {
     action_loading = data["actionLoading"];
     error = data["error"] or "";
     generated_text = data["generatedText"] or "";
+    mood_analysis = data["moodAnalysis"] or {};
 
     def on_mount() -> None {
         pid = params["id"];
@@ -133,6 +134,10 @@ def:pub page() -> JsxElement {
         await data["generateFollowUp"]();
     }
 
+    async def handle_analyze_mood() -> None {
+        await data["analyzeMood"]();
+    }
+
     async def handle_send_fu(e: any) -> None {
         e.preventDefault();
         msg = fu_message or generated_text;
@@ -208,17 +213,41 @@ def:pub page() -> JsxElement {
         );
     }
 
+    def mood_class(m: str) -> str {
+        if m == "excited" { return "pp-mood-excited"; }
+        if m == "interested" { return "pp-mood-interested"; }
+        if m == "hesitant" { return "pp-mood-hesitant"; }
+        if m == "cold" { return "pp-mood-cold"; }
+        return "pp-mood-neutral";
+    }
+
+    def mood_emoji(m: str) -> str {
+        if m == "excited" { return "🔥"; }
+        if m == "interested" { return "👍"; }
+        if m == "hesitant" { return "🤔"; }
+        if m == "cold" { return "❄️"; }
+        return "—";
+    }
+
     def render_follow_up(fu: dict) -> JsxElement {
         fu_seq = str(fu["sequence"] or 1);
         fu_date = fu["sent_at"] or "";
         fu_msg = fu["message"] or "";
+        fu_mood = fu["mood"] or "neutral";
+        fu_mood_note = fu["mood_note"] or "";
+        m_cls = mood_class(fu_mood);
+        m_emoji = mood_emoji(fu_mood);
         return (
             <div className="pp-card p-4">
                 <div className="flex items-center gap-3 mb-2">
                     <span className="pp-badge-proposed">#{fu_seq}</span>
                     <span className="text-xs text-muted-foreground">{fu_date}</span>
+                    <span className={m_cls}>{m_emoji} {fu_mood}</span>
                 </div>
                 <p className="text-sm">{fu_msg}</p>
+                {fu_mood_note and (
+                    <p className="text-xs text-muted-foreground mt-2 italic">{fu_mood_note}</p>
+                )}
             </div>
         );
     }
@@ -329,6 +358,13 @@ def:pub page() -> JsxElement {
     }
 
     ms_progress_pct = str(int((ms_done * 100) / ms_total)) + "%" if ms_total > 0 else "0%";
+
+    # Mood analysis values
+    ma_mood = mood_analysis["mood"] or "";
+    ma_trend = mood_analysis["trend"] or "";
+    ma_rec = mood_analysis["recommendation"] or "";
+    proj_mood = project["client_mood"] or "";
+    proj_mood_trend = project["mood_trend"] or "";
 
     # ── RENDER ──
     return (
@@ -492,6 +528,28 @@ def:pub page() -> JsxElement {
 
             {active_tab == "followups" and (
                 <div className="flex flex-col gap-6">
+                    {proj_mood and (
+                        <div className="pp-card p-5">
+                            <div className="flex items-center justify-between mb-3">
+                                <h3 className="text-sm font-semibold tracking-tight">Client Mood</h3>
+                                <div className="flex items-center gap-2">
+                                    <span className={mood_class(proj_mood)}>{mood_emoji(proj_mood)} {proj_mood}</span>
+                                    {proj_mood_trend and (
+                                        <span className="text-xs text-muted-foreground">{proj_mood_trend}</span>
+                                    )}
+                                </div>
+                            </div>
+                            {ma_rec and (
+                                <p className="text-sm text-muted-foreground">{ma_rec}</p>
+                            )}
+                            {not ma_rec and (
+                                <button className="pp-btn-ghost" type="button" onClick={handle_analyze_mood} disabled={action_loading}>
+                                    {action_loading and "Analyzing..." or "Analyze Client Mood"}
+                                </button>
+                            )}
+                        </div>
+                    )}
+
                     <div className="pp-card p-5">
                         <h3 className="text-sm font-semibold tracking-tight mb-4">Send Follow-up</h3>
                         <form onSubmit={handle_send_fu} className="flex flex-col gap-3">

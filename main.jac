@@ -17,7 +17,8 @@ import from services.projectService {
     toggle_milestone,
     generate_milestones,
     create_invoice,
-    update_invoice_status
+    update_invoice_status,
+    analyze_mood
 }
 import from services.dashboardService { get_dashboard_stats }
 import from services.dealScoreService { score_deal, get_deals, save_deal, delete_deal }

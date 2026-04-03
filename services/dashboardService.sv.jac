@@ -91,6 +91,52 @@ def:pub get_dashboard_stats() -> dict {
         }
     }
 
+    # Mood tracking
+    engaged_count = len([
+        p for p in projects
+        if (p["client_mood"] == "excited" or p["client_mood"] == "interested")
+        and p["status"] != "paid"
+    ]);
+    at_risk_count = len([
+        p for p in projects
+        if (p["client_mood"] == "hesitant" or p["client_mood"] == "cold")
+        and p["status"] != "paid" and p["status"] != "delivered"
+    ]);
+
+    # Mood insights
+    at_risk_projects = [
+        p for p in projects
+        if (p["client_mood"] == "hesitant" or p["client_mood"] == "cold")
+        and (p["status"] == "proposed" or p["status"] == "active")
+    ];
+    hot_projects = [
+        p for p in projects
+        if p["client_mood"] == "excited"
+        and (p["status"] == "proposed" or p["status"] == "active")
+    ];
+
+    if at_risk_projects {
+        names = ", ".join([p["client_name"].split()[0] for p in at_risk_projects]);
+        ai_insights.append({
+            "type": "mood",
+            "icon": "heart",
+            "message": str(len(at_risk_projects)) + " client" + ("s" if len(at_risk_projects) > 1 else "") + " showing cooling interest (" + names + ") — send a personalized follow-up or adjust your approach",
+            "action": "View projects",
+            "priority": 2
+        });
+    }
+
+    if hot_projects {
+        names = ", ".join([p["client_name"].split()[0] for p in hot_projects]);
+        ai_insights.append({
+            "type": "mood",
+            "icon": "heart",
+            "message": names + " " + ("are" if len(hot_projects) > 1 else "is") + " highly engaged — push for a quick close while momentum is strong",
+            "action": "View projects",
+            "priority": 3
+        });
+    }
+
     # Recent projects (all, sorted by created_at desc — mock already in order)
     recent = [
         {
@@ -99,7 +145,8 @@ def:pub get_dashboard_stats() -> dict {
             "client_name": p["client_name"],
             "status": p["status"],
             "budget": p["budget"],
-            "deadline": p["deadline"]
+            "deadline": p["deadline"],
+            "client_mood": p["client_mood"] or ""
         }
         for p in projects
     ];
@@ -118,6 +165,8 @@ def:pub get_dashboard_stats() -> dict {
         "total_projects": total,
         "ai_insights": ai_insights,
         "recent_projects": recent,
-        "upcoming_deadlines": upcoming_deadlines
+        "upcoming_deadlines": upcoming_deadlines,
+        "engaged_count": engaged_count,
+        "at_risk_count": at_risk_count
     };
 }

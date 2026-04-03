@@ -24,6 +24,8 @@ def:pub page() -> JsxElement {
     revenue_pending = str(int(stats["revenue_pending"] or 0));
     win_rate = str(stats["win_rate"] or 0);
     pending_fups = str(stats["pending_followups"] or 0);
+    engaged_count = str(stats["engaged_count"] or 0);
+    at_risk_count = str(stats["at_risk_count"] or 0);
     won_count = str((stats["active_projects"] or 0) + (stats["delivered_count"] or 0) + (stats["paid_count"] or 0));
 
     ai_insights = stats["ai_insights"] or [];
@@ -50,6 +52,7 @@ def:pub page() -> JsxElement {
         if itype == "revenue" { return "pp-insight-icon-revenue"; }
         if itype == "analytics" { return "pp-insight-icon-analytics"; }
         if itype == "action" { return "pp-insight-icon-action"; }
+        if itype == "mood" { return "pp-insight-icon-mood"; }
         return "pp-insight-icon-analytics";
     }
 
@@ -80,6 +83,13 @@ def:pub page() -> JsxElement {
                 </svg>
             );
         }
+        if itype == "mood" {
+            return (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+            );
+        }
         return (
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
@@ -102,6 +112,14 @@ def:pub page() -> JsxElement {
         );
     }
 
+    def mood_emoji(m: str) -> str {
+        if m == "excited" { return "🔥"; }
+        if m == "interested" { return "👍"; }
+        if m == "hesitant" { return "🤔"; }
+        if m == "cold" { return "❄️"; }
+        return "";
+    }
+
     def render_project_card(proj: dict) -> JsxElement {
         pid = proj["id"] or "";
         title = proj["title"] or "";
@@ -109,6 +127,8 @@ def:pub page() -> JsxElement {
         status = proj["status"] or "";
         budget = proj["budget"] or 0;
         budget_str = "$" + str(int(budget));
+        client_mood = proj["client_mood"] or "";
+        mood_icon = mood_emoji(client_mood);
         def handle_click() -> None {
             go_to_project(pid);
         }
@@ -121,7 +141,7 @@ def:pub page() -> JsxElement {
                 <div className="flex items-center justify-between gap-4">
                     <div className="min-w-0 flex-1">
                         <p className="text-sm font-medium truncate">{title}</p>
-                        <p className="text-xs text-muted-foreground mt-0.5">{client}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">{mood_icon and mood_icon + " " or ""}{client}</p>
                     </div>
                     <div className="flex items-center gap-3 shrink-0">
                         {budget > 0 and (
@@ -177,9 +197,9 @@ def:pub page() -> JsxElement {
                     <p className="text-xs text-muted-foreground mt-1">{won_count} won of {total_projects} total</p>
                 </div>
                 <div className="pp-stat-card">
-                    <p className="text-xs font-medium uppercase tracking-[0.08em] text-muted-foreground">Pending Follow-ups</p>
-                    <p className="text-3xl font-semibold mt-2 text-amber-300">{pending_fups}</p>
-                    <p className="text-xs text-muted-foreground mt-1">proposals awaiting response</p>
+                    <p className="text-xs font-medium uppercase tracking-[0.08em] text-muted-foreground">Client Engagement</p>
+                    <p className="text-3xl font-semibold mt-2 text-emerald-300">{engaged_count}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{at_risk_count} at risk, {pending_fups} need follow-up</p>
                 </div>
             </div>
 

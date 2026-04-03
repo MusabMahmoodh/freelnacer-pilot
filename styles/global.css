@@ -273,6 +273,44 @@ body {
     border: 1px solid rgba(245, 158, 11, 0.2);
   }
 
+  /* Client mood badges */
+  .pp-mood-excited {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+    background-color: rgba(16, 185, 129, 0.15);
+    color: #6ee7b7;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+  }
+  .pp-mood-interested {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+    background-color: rgba(59, 130, 246, 0.15);
+    color: #93bbfd;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+  }
+  .pp-mood-neutral {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+    background-color: rgba(255, 255, 255, 0.06);
+    color: rgba(231, 238, 252, 0.68);
+    border: 1px solid rgba(231, 238, 252, 0.12);
+  }
+  .pp-mood-hesitant {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+    background-color: rgba(245, 158, 11, 0.15);
+    color: #fcd34d;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+  }
+  .pp-mood-cold {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+    background-color: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+  }
+  .pp-insight-icon-mood {
+    @apply h-8 w-8 rounded-lg flex items-center justify-center shrink-0;
+    background-color: rgba(168, 85, 247, 0.15);
+    color: #c4b5fd;
+    border: 1px solid rgba(168, 85, 247, 0.2);
+  }
+
   .pp-skeleton {
     @apply rounded-[var(--radius-md)] border border-border;
     background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.09) 50%, rgba(255,255,255,0.05) 100%);

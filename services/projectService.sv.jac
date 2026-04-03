@@ -25,9 +25,11 @@ glob mock_projects: list = [
             "success_score": 84,
             "generated_at": "2026-03-15"
         },
+        "client_mood": "interested",
+        "mood_trend": "stable",
         "follow_ups": [
-            {"id": "fu_001", "message": "Hi John — just following up on my proposal. I'm available to start this week and happy to hop on a quick call to align on scope. Let me know!", "sent_at": "2026-03-17", "sequence": 1},
-            {"id": "fu_002", "message": "Hey John — wanted to check in one more time. I've blocked out time in my schedule for this project. If you have any questions about the approach or pricing, I'm happy to discuss.", "sent_at": "2026-03-20", "sequence": 2}
+            {"id": "fu_001", "message": "Hi John — just following up on my proposal. I'm available to start this week and happy to hop on a quick call to align on scope. Let me know!", "sent_at": "2026-03-17", "sequence": 1, "mood": "interested", "mood_note": "Client responded same day asking about CMS options — engaged and evaluating"},
+            {"id": "fu_002", "message": "Hey John — wanted to check in one more time. I've blocked out time in my schedule for this project. If you have any questions about the approach or pricing, I'm happy to discuss.", "sent_at": "2026-03-20", "sequence": 2, "mood": "interested", "mood_note": "Shared Figma files and brand guidelines — actively preparing to move forward"}
         ],
         "milestones": [
             {"id": "ms_001", "title": "Discovery + wireframes", "due_date": "2026-04-07", "amount": 800.0, "completed": True},
@@ -49,6 +51,8 @@ glob mock_projects: list = [
         "deadline": "2026-05-20",
         "created_at": "2026-03-28",
         "platform": "Direct",
+        "client_mood": "hesitant",
+        "mood_trend": "cooling",
         "proposal": {
             "text": "Hey Sarah — love the vision for StartupX. I've shipped 3 similar SaaS dashboards (analytics + billing) and can get your MVP live in under 6 weeks.\n\nMy plan:\n1. API design + auth scaffolding (week 1–2)\n2. Dashboard UI + data visualization (week 3–4)\n3. Stripe integration + billing flows (week 5)\n4. Testing + deploy + handoff (week 6)\n\nI'd suggest starting with a 15-min alignment call to nail down the core metrics you want to track.",
             "pricing": "$7,500–$9,500 (project range)",
@@ -71,6 +75,8 @@ glob mock_projects: list = [
         "deadline": "",
         "created_at": "2026-04-01",
         "platform": "Fiverr",
+        "client_mood": "",
+        "mood_trend": "",
         "proposal": None,
         "follow_ups": [],
         "milestones": [],
@@ -87,6 +93,8 @@ glob mock_projects: list = [
         "deadline": "2026-03-25",
         "created_at": "2026-02-20",
         "platform": "Upwork",
+        "client_mood": "excited",
+        "mood_trend": "improving",
         "proposal": {
             "text": "Hi Alex — great scope doc. I've done 4 Express-to-FastAPI migrations and can handle this cleanly with a parallel-run strategy (both APIs live during transition).\n\nApproach:\n1. Endpoint audit + FastAPI scaffolding (week 1)\n2. Core endpoints migration (week 2–3)\n3. Redis + auth layer (week 4)\n4. Parallel testing + cutover (week 5)\n\nZero-downtime is my default — I'll set up feature flags so you can switch per-endpoint.",
             "pricing": "$3,200–$4,000 (project range)",
@@ -95,7 +103,7 @@ glob mock_projects: list = [
             "generated_at": "2026-02-20"
         },
         "follow_ups": [
-            {"id": "fu_003", "message": "Hi Alex — following up on my proposal for the API migration. Happy to walk through the parallel-run strategy on a call if that would help.", "sent_at": "2026-02-22", "sequence": 1}
+            {"id": "fu_003", "message": "Hi Alex — following up on my proposal for the API migration. Happy to walk through the parallel-run strategy on a call if that would help.", "sent_at": "2026-02-22", "sequence": 1, "mood": "excited", "mood_note": "Client replied within an hour with repo access and said 'Let's go!' — very strong signal"}
         ],
         "milestones": [
             {"id": "ms_006", "title": "Endpoint audit + scaffolding", "due_date": "2026-02-27", "amount": 700.0, "completed": True},
@@ -125,6 +133,8 @@ glob mock_projects: list = [
         "deadline": "2026-03-10",
         "created_at": "2026-01-15",
         "platform": "Direct",
+        "client_mood": "excited",
+        "mood_trend": "stable",
         "proposal": {
             "text": "Hi David — exciting project. I've built 5 React Native apps with offline-first architecture and can deliver a polished file sync client.\n\nTimeline:\n1. Architecture + push notification setup (week 1–2)\n2. Core sync UI + background uploads (week 3–4)\n3. Offline mode + conflict resolution (week 5–6)\n4. Polish + App Store prep (week 7)\n\nI'll use Expo for fast iteration and WatermelonDB for offline storage.",
             "pricing": "$5,500–$6,800 (project range)",
@@ -133,7 +143,7 @@ glob mock_projects: list = [
             "generated_at": "2026-01-15"
         },
         "follow_ups": [
-            {"id": "fu_004", "message": "Hi David — just checking in on the proposal. I can start next week if the timeline works for you.", "sent_at": "2026-01-17", "sequence": 1}
+            {"id": "fu_004", "message": "Hi David — just checking in on the proposal. I can start next week if the timeline works for you.", "sent_at": "2026-01-17", "sequence": 1, "mood": "excited", "mood_note": "Client immediately shared detailed specs and introduced the CTO — full buy-in from the team"}
         ],
         "milestones": [
             {"id": "ms_010", "title": "Architecture + push setup", "due_date": "2026-01-29", "amount": 1500.0, "completed": True},
@@ -187,6 +197,8 @@ def:pub create_project(title: str, client_name: str, client_email: str, descript
         "deadline": deadline,
         "created_at": "2026-04-02",
         "platform": "",
+        "client_mood": "",
+        "mood_trend": "",
         "proposal": None,
         "follow_ups": [],
         "milestones": [],
@@ -298,18 +310,27 @@ def:pub generate_follow_up(project_id: str, sequence: int) -> dict {
     client_first = (project["client_name"] or "there").split()[0];
     seq = sequence or 1;
 
+    mood = "neutral";
+    mood_note = "No client response data yet — waiting for reply";
+
     if seq == 1 {
         msg = "Hi " + client_first + " — just following up on my proposal. I'm available to start this week and happy to hop on a quick call to discuss any questions about the approach or timeline. Let me know!";
+        mood = "interested";
+        mood_note = "First follow-up sent — initial engagement looks promising based on proposal view time";
     } elif seq == 2 {
         msg = "Hey " + client_first + " — wanted to check in one more time. I've kept time blocked for this project in my schedule. If there's anything I can clarify about scope, pricing, or process, I'm here. No pressure either way!";
+        mood = "hesitant";
+        mood_note = "No reply after first follow-up — client may be comparing proposals or busy";
     } else {
         msg = "Hi " + client_first + " — sending a final check-in. If the timing isn't right, totally understand. If things change down the road, feel free to reach out — I'd be happy to help whenever you're ready.";
+        mood = "cold";
+        mood_note = "Multiple follow-ups without response — client likely went with another freelancer";
     }
 
-    return {"message": msg, "sequence": seq};
+    return {"message": msg, "sequence": seq, "mood": mood, "mood_note": mood_note};
 }
 
-def:pub add_follow_up(project_id: str, message: str) -> dict {
+def:pub add_follow_up(project_id: str, message: str, mood: str, mood_note: str) -> dict {
     for p in mock_projects {
         if p["id"] == project_id {
             new_id = "fu_" + str(len(p["follow_ups"]) + 100);
@@ -318,16 +339,53 @@ def:pub add_follow_up(project_id: str, message: str) -> dict {
                 "id": new_id,
                 "message": message,
                 "sent_at": "2026-04-02",
-                "sequence": seq
+                "sequence": seq,
+                "mood": mood or "neutral",
+                "mood_note": mood_note or ""
             };
             p["follow_ups"].append(fu);
-            if p["status"] == "proposed" {
-                p["status"] = "proposed";
-            }
+            # Update project-level mood from latest follow-up
+            p["client_mood"] = mood or "neutral";
             return fu;
         }
     }
     return {"error": "Project not found"};
+}
+
+
+# ── Mood Analysis (mock AI) ────────────────────────────────────────
+
+def:pub analyze_mood(project_id: str) -> dict {
+    project = get_project(project_id);
+    if "error" in project {
+        return {"error": "Project not found"};
+    }
+
+    mood = project["client_mood"] or "neutral";
+    trend = project["mood_trend"] or "stable";
+    follow_ups = project["follow_ups"] or [];
+    client = (project["client_name"] or "Client").split()[0];
+
+    recommendation = "";
+    if mood == "excited" {
+        recommendation = client + " is very engaged. Push for a quick close — send a scope confirmation or contract.";
+    } elif mood == "interested" {
+        recommendation = client + " is evaluating. Share a case study or offer a quick call to address any concerns.";
+    } elif mood == "neutral" {
+        recommendation = "Not enough signal yet. Send a personalized follow-up referencing their specific needs.";
+    } elif mood == "hesitant" {
+        recommendation = client + " seems uncertain. Consider adjusting pricing, offering a smaller pilot, or addressing objections directly.";
+    } elif mood == "cold" {
+        recommendation = client + " has gone quiet. One final graceful check-in, then move on to higher-priority leads.";
+    }
+
+    return {
+        "mood": mood,
+        "trend": trend,
+        "recommendation": recommendation,
+        "follow_up_count": len(follow_ups),
+        "client_name": project["client_name"] or ""
+    };
 }
 
 

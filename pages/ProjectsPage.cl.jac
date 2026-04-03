@@ -82,6 +82,14 @@ def:pub page() -> JsxElement {
     def on_budget(e: any) -> None { new_budget = e.target.value; }
     def on_deadline(e: any) -> None { new_deadline = e.target.value; }
 
+    def mood_emoji(m: str) -> str {
+        if m == "excited" { return "🔥"; }
+        if m == "interested" { return "👍"; }
+        if m == "hesitant" { return "🤔"; }
+        if m == "cold" { return "❄️"; }
+        return "";
+    }
+
     def render_project_card(proj: dict) -> JsxElement {
         pid = proj["id"] or "";
         title = proj["title"] or "";
@@ -91,6 +99,8 @@ def:pub page() -> JsxElement {
         budget = proj["budget"] or 0;
         budget_str = "$" + str(int(budget));
         deadline = proj["deadline"] or "";
+        client_mood = proj["client_mood"] or "";
+        mood_icon = mood_emoji(client_mood);
         ms_list = proj["milestones"] or [];
         ms_done = len([m for m in ms_list if m["completed"]]);
         ms_total = len(ms_list);
@@ -112,7 +122,9 @@ def:pub page() -> JsxElement {
                             <p className="text-base font-semibold truncate">{title}</p>
                             <span className={badge_class(status)}>{status}</span>
                         </div>
-                        <p className="text-sm text-muted-foreground">{client}</p>
+                        <p className="text-sm text-muted-foreground">
+                            {mood_icon and mood_icon + " " or ""}{client}
+                        </p>
                     </div>
                     <div className="flex flex-col items-end gap-1 shrink-0">
                         {budget > 0 and (

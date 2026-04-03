@@ -8,7 +8,8 @@ sv import from ..services.projectService {
     toggle_milestone,
     generate_milestones,
     create_invoice,
-    update_invoice_status
+    update_invoice_status,
+    analyze_mood
 }
 
 def:pub useProjectDetail() -> dict {
@@ -18,6 +19,9 @@ def:pub useProjectDetail() -> dict {
     has action_loading: bool = False;
     has error: str = "";
     has generated_text: str = "";
+    has mood_analysis: dict = {};
+    has generated_mood: str = "";
+    has generated_mood_note: str = "";
 
     async def load_project(project_id: str) -> None {
         loading = True;
@@ -79,8 +83,10 @@ def:pub useProjectDetail() -> dict {
         try {
             seq = len(project["follow_ups"] or []) + 1;
             result = await generate_follow_up(project["id"], seq);
-            if result and "message" in result {
+            if result and result["message"] {
                 generated_text = result["message"];
+                generated_mood = result["mood"] or "neutral";
+                generated_mood_note = result["mood_note"] or "";
             }
         } except Exception as e {
             error = "Failed to generate follow-up";
@@ -92,16 +98,36 @@ def:pub useProjectDetail() -> dict {
         if not project or not project["id"] or not message { return; }
         action_loading = True;
         try {
-            result = await add_follow_up(project["id"], message);
+            mood_val = generated_mood or "neutral";
+            mood_note_val = generated_mood_note or "";
+            result = await add_follow_up(project["id"], message, mood_val, mood_note_val);
             if result and not ("error" in result) {
                 if not project["follow_ups"] {
                     project["follow_ups"] = [];
                 }
                 project["follow_ups"].append(result);
                 generated_text = "";
+                generated_mood = "";
+                generated_mood_note = "";
+                # Update project mood
+                project["client_mood"] = result["mood"] or "neutral";
             }
         } except Exception as e {
             error = "Failed to send follow-up";
+        }
+        action_loading = False;
+    }
+
+    async def handle_analyze_mood() -> None {
+        if not project or not project["id"] { return; }
+        action_loading = True;
+        try {
+            result = await analyze_mood(project["id"]);
+            if result and not ("error" in result) {
+                mood_analysis = result;
+            }
+        } except Exception as e {
+            error = "Failed to analyze mood";
         }
         action_loading = False;
     }
@@ -212,6 +238,8 @@ def:pub useProjectDetail() -> dict {
         "generateMilestones": handle_generate_milestones,
         "createInvoice": handle_create_invoice,
         "updateInvoice": handle_update_invoice,
-        "setGeneratedText": set_generated_text
+        "setGeneratedText": set_generated_text,
+        "moodAnalysis": mood_analysis,
+        "analyzeMood": handle_analyze_mood
     };
 }
