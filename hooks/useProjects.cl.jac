@@ -6,6 +6,7 @@ def:pub useProjects() -> dict {
     has loading: bool = True;
     has error: str = "";
     has show_create: bool = False;
+    has creating: bool = False;
 
     async def load_projects() -> None {
         loading = True;
@@ -36,18 +37,19 @@ def:pub useProjects() -> dict {
     }
 
     async def handle_create(title: str, client_name: str, client_email: str, description: str, budget: float, deadline: str) -> dict {
-        loading = True;
+        creating = True;
         try {
             result = await create_project(title, client_name, client_email, description, budget, deadline);
             if result and not ("error" in result) {
                 show_create = False;
+                creating = False;
                 await load_projects();
                 return result;
             }
         } except Exception as e {
             error = "Failed to create project";
         }
-        loading = False;
+        creating = False;
         return {};
     }
 
