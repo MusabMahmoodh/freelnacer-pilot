@@ -8,6 +8,7 @@ def:pub page() -> JsxElement {
     projects = data["projects"] or [];
     filter = data["filter"] or "all";
     loading = data["loading"];
+    creating = data["creating"];
     show_create = data["show_create"];
 
     def on_mount() -> None {
@@ -170,8 +171,8 @@ def:pub page() -> JsxElement {
                             <textarea className="pp-input min-h-[100px] resize-none" value={new_desc} onChange={on_desc} placeholder="Paste the job description or describe the project scope..." />
                         </div>
                         <div className="md:col-span-2 flex items-center gap-3">
-                            <button className="pp-btn-primary" type="submit" disabled={loading}>
-                                {loading and "Creating..." or "Create Project"}
+                            <button className="pp-btn-primary" type="submit" disabled={creating}>
+                                {creating and "Creating..." or "Create Project"}
                             </button>
                             <button className="pp-btn-ghost" type="button" onClick={handle_toggle_create}>Cancel</button>
                         </div>

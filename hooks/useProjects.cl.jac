@@ -63,6 +63,7 @@ def:pub useProjects() -> dict {
         "loading": loading,
         "error": error,
         "show_create": show_create,
+        "creating": creating,
         "loadProjects": load_projects,
         "changeFilter": change_filter,
         "createProject": handle_create,
