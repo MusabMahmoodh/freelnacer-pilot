@@ -1,3 +1,93 @@
+glob mock_deals: list = [
+    {
+        "id": "deal_001",
+        "title": "React Dashboard Build",
+        "job_posting": "Looking for an experienced React developer to build a dashboard with charts, filters, and export features. Budget is $2,500. Timeline: 3 weeks. Must have experience with Recharts or Chart.js. Deliverables include wireframes, source code, and deployment.",
+        "score": 86,
+        "swipe": "JUMP ON THIS NOW",
+        "verdict": "High-quality lead. Clear signals and lower risk.",
+        "win_likelihood": 68,
+        "risk_level": "Low",
+        "red_flags": [],
+        "green_flags": [
+            "Mentions budget or pricing model.",
+            "Mentions timeline/milestones.",
+            "Mentions requirements/scope/deliverables."
+        ],
+        "next_steps": [
+            "Ask for budget range and decision timeline.",
+            "Request 2\u20133 concrete examples of desired outcomes.",
+            "Propose a paid discovery milestone if scope is unclear."
+        ],
+        "scored_at": "2026-03-28"
+    },
+    {
+        "id": "deal_002",
+        "title": "Quick Logo Fix",
+        "job_posting": "Need someone to quickly fix our logo, simple job should be easy and done ASAP.",
+        "score": 34,
+        "swipe": "SKIP THIS",
+        "verdict": "Too many red flags. Protect your time.",
+        "win_likelihood": 35,
+        "risk_level": "High",
+        "red_flags": [
+            "Very short posting \u2014 likely missing key details.",
+            "Uses 'quick/simple/easy' language \u2014 often underestimates scope.",
+            "Urgent/ASAP \u2014 may indicate rushed decision-making."
+        ],
+        "green_flags": [],
+        "next_steps": [
+            "Ask for budget range and decision timeline.",
+            "Request 2\u20133 concrete examples of desired outcomes.",
+            "Propose a paid discovery milestone if scope is unclear."
+        ],
+        "scored_at": "2026-03-30"
+    }
+];
+
+def:pub get_deals() -> list {
+    return mock_deals;
+}
+
+def:pub save_deal(title: str, job_posting: str, score_result: dict) -> dict {
+    new_id = "deal_" + str(len(mock_deals) + 1).zfill(3);
+
+    score_val = score_result.get("score", 0);
+    risk_level = "High";
+    if score_val >= 80 {
+        risk_level = "Low";
+    } elif score_val >= 55 {
+        risk_level = "Medium";
+    }
+
+    deal = {
+        "id": new_id,
+        "title": title,
+        "job_posting": job_posting,
+        "score": score_result.get("score", 0),
+        "swipe": score_result.get("swipe", ""),
+        "verdict": score_result.get("verdict", ""),
+        "win_likelihood": score_result.get("win_likelihood", 0),
+        "risk_level": risk_level,
+        "red_flags": score_result.get("red_flags", []),
+        "green_flags": score_result.get("green_flags", []),
+        "next_steps": score_result.get("next_steps", []),
+        "scored_at": "2026-04-03"
+    };
+    mock_deals.insert(0, deal);
+    return deal;
+}
+
+def:pub delete_deal(deal_id: str) -> dict {
+    for (i, d) in enumerate(mock_deals) {
+        if d["id"] == deal_id {
+            mock_deals.pop(i);
+            return {"success": True};
+        }
+    }
+    return {"error": "Deal not found"};
+}
+
 def:pub score_deal(job_posting: str) -> dict {
     text = (job_posting or "").lower();
 

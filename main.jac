@@ -20,7 +20,7 @@ import from services.projectService {
     update_invoice_status
 }
 import from services.dashboardService { get_dashboard_stats }
-import from services.dealScoreService { score_deal }
+import from services.dealScoreService { score_deal, get_deals, save_deal, delete_deal }
 
 cl import from .index { ClientApp }
 

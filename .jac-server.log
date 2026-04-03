@@ -1,4 +1,5 @@
-Jac API Server running on http://0.0.0.0:8000
+  Port 8000 is in use, using port 8002 instead
+Jac API Server running on http://0.0.0.0:8002
 Module: main
 
 Available endpoints:
@@ -21,13 +22,7 @@ Press Ctrl+C to stop the server
 
   JAC DEV SERVER v0.13.4
 
-  ➜  Local:     http://localhost:8000/
+  ➜  Local:     http://localhost:8002/
 
   🚀 Server ready
 
-127.0.0.1 - "GET /login HTTP/1.1" 200 -
-127.0.0.1 - "GET /static/client.js?hash=b91d222a21e3d60778468daa8aac26d838f915007294833f9ac93625e93abae2 HTTP/1.1" 200 -
-127.0.0.1 - "GET /favicon.ico HTTP/1.1" 404 -
-127.0.0.1 - "GET /static/client.js HTTP/1.1" 200 -
-127.0.0.1 - "GET /static/client.js HTTP/1.1" 200 -
-127.0.0.1 - "GET /static/client.js HTTP/1.1" 200 -
