@@ -1,0 +1,33 @@
+Jac API Server running on http://0.0.0.0:8000
+Module: main
+
+Available endpoints:
+  POST /user/register - Create a new user
+  POST /user/login - Login and get auth token
+  GET  /user/info - Get current user information (auth required)
+  PUT  /user/username - Update username (auth required)
+  PUT  /user/password - Update password (auth required)
+  GET /functions - List all functions
+  GET /walkers - List all walkers
+  GET /function/<name> - Get function signature
+  GET /walker/<name> - Get walker info
+  POST /function/<name> - Call a function
+  POST /walker/<name> - Spawn a walker
+  GET /cl/<name> - Render HTML page for client function
+
+Base route (/) configured to serve: app
+
+Press Ctrl+C to stop the server
+
+  JAC DEV SERVER v0.13.4
+
+  ➜  Local:     http://localhost:8000/
+
+  🚀 Server ready
+
+127.0.0.1 - "GET /login HTTP/1.1" 200 -
+127.0.0.1 - "GET /static/client.js?hash=b91d222a21e3d60778468daa8aac26d838f915007294833f9ac93625e93abae2 HTTP/1.1" 200 -
+127.0.0.1 - "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - "GET /static/client.js HTTP/1.1" 200 -
+127.0.0.1 - "GET /static/client.js HTTP/1.1" 200 -
+127.0.0.1 - "GET /static/client.js HTTP/1.1" 200 -

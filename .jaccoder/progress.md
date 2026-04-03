@@ -1,26 +1,27 @@
-# Project: PitchPerfect AI
-## Status: DONE
+# Project: freelnacer-pilot — Smart Deal Score
+## Status: IN PROGRESS
 
 ## Plan
-1. [x] Inspect existing starter + routing
-2. [x] Add proposal generation backend service (mock AI)
-3. [x] Update global styling to PitchPerfect SaaS theme
-4. [x] Build client hook + UI (input, tone selector, loading, outputs, copy)
-5. [x] Browser validate + one interactive test
+1. [x] Add mock backend endpoint `score_deal(job_posting)`
+2. [x] Add client hook `useDealScore` to call endpoint
+3. [x] Add `DealScorePage` UI (paste job post → score card)
+4. [x] Wire route + AppShell nav
+5. [ ] Validate: `jac start --dev main.jac` + `browser_validate`
+6. [ ] Interactive test: paste sample → click Score → see result
 
 ## Files
-- main.jac — registers `generate_pitch` endpoint + mounts client
-- services/pitchService.sv.jac — mock AI proposal/pricing/follow-up + success score
-- hooks/usePitch.cl.jac — client hook calling `generate_pitch`
-- pages/DashboardPage.cl.jac — PitchPerfect UI (tone, loading skeletons, copy)
-- styles/global.css — modern SaaS Tailwind theme + shimmer skeleton
+- services/dealScoreService.sv.jac — mock scoring logic
+- hooks/useDealScore.cl.jac — client state + call
+- pages/DealScorePage.cl.jac — UI
+- index.cl.jac — route
+- components/AppShell.cl.jac — nav link
+- main.jac — register endpoint
 
 ## Issues
-- Inline lambdas in JSX caused compile errors; fixed by using named handler functions.
+- 
 
 ## Learnings
-- sv import calls to def:pub endpoints must use positional args only.
-- In .cl.jac JSX, event handlers must be named `def` functions (no lambda/inline handlers).
+- 
 
 ## Last Action
-Validated UI in browser; generated proposal and verified Copy button works.
+Implemented mock Smart Deal Score backend + UI and wired into router/nav. Next: start server and browser_validate.

@@ -13,9 +13,12 @@ def:pub AppShell() -> JsxElement {
 
     def go_dashboard() -> None { navigate("/dashboard"); }
     def go_projects() -> None { navigate("/projects"); }
+    def go_deal_score() -> None { navigate("/deal-score"); }
 
     def nav_class(path: str) -> str {
-        if current_path == path or (path == "/projects" and current_path.startsWith("/projects")) {
+        if current_path == path
+            or (path == "/projects" and current_path.startsWith("/projects"))
+            or (path == "/deal-score" and current_path.startsWith("/deal-score")) {
             return "pp-nav-item-active";
         }
         return "pp-nav-item";
@@ -53,6 +56,14 @@ def:pub AppShell() -> JsxElement {
                             <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
                         </svg>
                         Projects
+                    </button>
+                    <button type="button" className={nav_class("/deal-score")} onClick={go_deal_score}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M12 20V10" />
+                            <path d="M18 20V4" />
+                            <path d="M6 20v-6" />
+                        </svg>
+                        Smart Deal Score
                     </button>
                 </nav>
 
